@@ -1,11 +1,11 @@
 {
   "port": 3001,
   "appPort": 8080,
-  "host": "localhost:3001",
+  "host": "https://sghomeneeds-formio.herokuapp.com/",
   "protocol": "http",
-  "domain": "http://localhost:3001",
+  "domain": "https://sghomeneeds-formio.herokuapp.com/",
   "basePath": "",
-  "mongo": "mongodb://localhost:27017/formioapp",
+  "mongo": "mongodb://heroku_npb3538v:5li868b80tg2l7u7jfd14eupmr@ds045157.mlab.com:45157/heroku_npb3538v",
   "mongoSecret": "--- change me now ---",
   "reservedForms": [
     "submission",
