@@ -200,7 +200,7 @@ module.exports = function(formio, items, done) {
       message += '\nOr, you can provide a custom Github repository...\n'.green;
       util.log(message);
       if (process.env.NODE_ENV === 'production') {
-        application = 'formio/formio-app-basic';
+        application = '';
         done();
       }
       else {

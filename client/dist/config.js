@@ -1,6 +1,6 @@
 
-var APP_URL = 'https://sghomeneeds-formio.herokuapp.com/';
-var API_URL = 'https://sghomeneeds-formio.herokuapp.com/';
+var APP_URL = 'http://localhost:3001';
+var API_URL = 'http://localhost:3001';
 
 
 // Parse query string

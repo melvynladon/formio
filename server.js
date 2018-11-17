@@ -43,7 +43,10 @@ module.exports = function(options) {
   // Use the given config.
   const config = options.config || require('config');
   config.mongo = process.env.MONGODB_URI || config.mongo;
-  config.appPort = process.env.PORT || config.appPort;
+  config.appPort = process.env.APP_PORT || config.appPort;
+  config.port = process.env.PORT || config.port;
+  config.host = process.env.HOST || config.host;
+  config.domain = process.env.DOMAIN || config.domain;
 
   // Configure nunjucks.
   nunjucks.configure('client', {
@@ -66,7 +69,7 @@ module.exports = function(options) {
       if (fs.existsSync('app')) {
         const application = express();
         application.use('/', express.static(path.join(__dirname, '/app/dist')));
-        config.appPort = process.env.PORT || 8080;
+        config.appPort = process.env.APP_PORT || 8080;
         application.listen(config.appPort);
         const appHost = `http://localhost:${config.appPort}`;
         util.log(` > Serving application at ${appHost.green}`);
