@@ -195,34 +195,36 @@ module.exports = function(formio, items, done) {
       });
       message += '\nOr, you can provide a custom Github repository...\n'.green;
       util.log(message);
-      prompt.get([
-        {
-          name: 'app',
-          description: 'GitHub repository or selection?',
-          default: '1',
-          required: true
-        }
-      ], function(err, results) {
-        if (err) {
-          return done(err);
-        }
-
-        if (results.app.indexOf('https://github.com/') !== -1) {
-          application = results.app;
-        }
-        else {
-          const selection = parseInt(results.app, 10);
-          if (_.isNumber(selection)) {
-            if ((selection > 1) && (selection <= repos.length)) {
-              application = repos[selection - 1];
-            }
-          }
-        }
-
-        // Replace github.com url.
-        application = application.replace('https://github.com/', '');
-        done();
-      });
+      // prompt.get([
+      //   {
+      //     name: 'app',
+      //     description: 'GitHub repository or selection?',
+      //     default: '1',
+      //     required: true
+      //   }
+      // ], function(err, results) {
+      //   if (err) {
+      //     return done(err);
+      //   }
+      //
+      //   if (results.app.indexOf('https://github.com/') !== -1) {
+      //     application = results.app;
+      //   }
+      //   else {
+      //     const selection = parseInt(results.app, 10);
+      //     if (_.isNumber(selection)) {
+      //       if ((selection > 1) && (selection <= repos.length)) {
+      //         application = repos[selection - 1];
+      //       }
+      //     }
+      //   }
+      //
+      //   // Replace github.com url.
+      //   application = application.replace('https://github.com/', '');
+      //   done();
+      // });
+      application = 'None';
+      done();
     },
 
     /**
