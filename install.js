@@ -160,23 +160,27 @@ module.exports = function(formio, items, done) {
      * @param done
      */
     areYouSure: function(done) {
-      done();
-      // prompt.get([
-      //   {
-      //     name: 'install',
-      //     description: 'Are you sure you wish to install? (y/N)',
-      //     required: true
-      //   }
-      // ], function(err, results) {
-      //   if (err) {
-      //     return done(err);
-      //   }
-      //   if (results.install.toLowerCase() !== 'y') {
-      //     return done('Installation canceled.');
-      //   }
-      //
-      //   done();
-      // });
+      if (process.env.NODE_ENV === 'production') {
+        done();
+      }
+      else {
+        prompt.get([
+          {
+            name: 'install',
+            description: 'Are you sure you wish to install? (y/N)',
+            required: true
+          }
+        ], function(err, results) {
+          if (err) {
+            return done(err);
+          }
+          if (results.install.toLowerCase() !== 'y') {
+            return done('Installation canceled.');
+          }
+
+          done();
+        });
+      }
     },
 
     // Allow them to select the application.
@@ -195,36 +199,40 @@ module.exports = function(formio, items, done) {
       });
       message += '\nOr, you can provide a custom Github repository...\n'.green;
       util.log(message);
-      // prompt.get([
-      //   {
-      //     name: 'app',
-      //     description: 'GitHub repository or selection?',
-      //     default: '1',
-      //     required: true
-      //   }
-      // ], function(err, results) {
-      //   if (err) {
-      //     return done(err);
-      //   }
-      //
-      //   if (results.app.indexOf('https://github.com/') !== -1) {
-      //     application = results.app;
-      //   }
-      //   else {
-      //     const selection = parseInt(results.app, 10);
-      //     if (_.isNumber(selection)) {
-      //       if ((selection > 1) && (selection <= repos.length)) {
-      //         application = repos[selection - 1];
-      //       }
-      //     }
-      //   }
-      //
-      //   // Replace github.com url.
-      //   application = application.replace('https://github.com/', '');
-      //   done();
-      // });
-      application = 'formio/formio-app-basic';
-      done();
+      if (process.env.NODE_ENV === 'production') {
+        application = 'formio/formio-app-basic';
+        done();
+      }
+      else {
+        prompt.get([
+          {
+            name: 'app',
+            description: 'GitHub repository or selection?',
+            default: '1',
+            required: true
+          }
+        ], function(err, results) {
+          if (err) {
+            return done(err);
+          }
+
+          if (results.app.indexOf('https://github.com/') !== -1) {
+            application = results.app;
+          }
+          else {
+            const selection = parseInt(results.app, 10);
+            if (_.isNumber(selection)) {
+              if ((selection > 1) && (selection <= repos.length)) {
+                application = repos[selection - 1];
+              }
+            }
+          }
+
+          // Replace github.com url.
+          application = application.replace('https://github.com/', '');
+          done();
+        });
+      }
     },
 
     /**
@@ -313,21 +321,27 @@ module.exports = function(formio, items, done) {
       message += '\n   Please provide the local file path of the project.json file.'.yellow;
       message += '\n   Or, just press '.yellow + 'ENTER'.green + ' to use the default template.\n'.yellow;
       util.log(message);
-      prompt.get([
-        {
-          name: 'templateFile',
-          description: 'Local file path or just press Enter for default.',
-          default: 'client',
-          required: true
-        }
-      ], function(err, results) {
-        if (err) {
-          return done(err);
-        }
-
-        templateFile = results.templateFile ? results.templateFile : 'client';
+      if (process.env.NODE_ENV === 'production') {
+        templateFile = 'client';
         done();
-      });
+      }
+      else {
+        prompt.get([
+          {
+            name: 'templateFile',
+            description: 'Local file path or just press Enter for default.',
+            default: 'client',
+            required: true
+          }
+        ], function(err, results) {
+          if (err) {
+            return done(err);
+          }
+
+          templateFile = results.templateFile ? results.templateFile : 'client';
+          done();
+        });
+      }
     },
 
     /**
@@ -399,25 +413,11 @@ module.exports = function(formio, items, done) {
         return done();
       }
       util.log('Creating root user account...'.green);
-      prompt.get([
-        {
-          name: 'email',
-          description: 'Enter your email address for the root account.',
-          pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-          message: 'Must be a valid email',
-          required: true
-        },
-        {
-          name: 'password',
-          description: 'Enter your password for the root account.',
-          require: true,
-          hidden: true
-        }
-      ], function(err, result) {
-        if (err) {
-          return done(err);
-        }
-
+      if (process.env.NODE_ENV === 'production') {
+        const result = {
+          email: process.env.ROOT_EMAIL,
+          password: process.env.ROOT_PASSWORD,
+        };
         util.log('Encrypting password');
         formio.encrypt(result.password, function(err, hash) {
           if (err) {
@@ -443,7 +443,54 @@ module.exports = function(formio, items, done) {
             done();
           });
         });
-      });
+      }
+      else {
+        prompt.get([
+          {
+            name: 'email',
+            description: 'Enter your email address for the root account.',
+            pattern: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+            message: 'Must be a valid email',
+            required: true
+          },
+          {
+            name: 'password',
+            description: 'Enter your password for the root account.',
+            require: true,
+            hidden: true
+          }
+        ], function(err, result) {
+          if (err) {
+            return done(err);
+          }
+
+          util.log('Encrypting password');
+          formio.encrypt(result.password, function(err, hash) {
+            if (err) {
+              return done(err);
+            }
+
+            // Create the root user submission.
+            util.log('Creating root user account');
+            formio.resources.submission.model.create({
+              form: project.resources.admin._id,
+              data: {
+                email: result.email,
+                password: hash
+              },
+              roles: [
+                project.roles.administrator._id
+              ]
+            }, function(err, item) {
+              if (err) {
+                return done(err);
+              }
+
+              done();
+            });
+          });
+        });
+      }
     }
   };
 

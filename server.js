@@ -42,6 +42,7 @@ module.exports = function(options) {
 
   // Use the given config.
   const config = options.config || require('config');
+  config.mongo = process.env.MONGODB_URI || config.mongo;
 
   // Configure nunjucks.
   nunjucks.configure('client', {
