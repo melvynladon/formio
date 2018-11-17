@@ -223,7 +223,7 @@ module.exports = function(formio, items, done) {
       //   application = application.replace('https://github.com/', '');
       //   done();
       // });
-      application = 'None';
+      application = 'formio/formio-app-basic';
       done();
     },
 
