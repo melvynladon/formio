@@ -160,22 +160,23 @@ module.exports = function(formio, items, done) {
      * @param done
      */
     areYouSure: function(done) {
-      prompt.get([
-        {
-          name: 'install',
-          description: 'Are you sure you wish to install? (y/N)',
-          required: true
-        }
-      ], function(err, results) {
-        if (err) {
-          return done(err);
-        }
-        if (results.install.toLowerCase() !== 'y') {
-          return done('Installation canceled.');
-        }
-
-        done();
-      });
+      done();
+      // prompt.get([
+      //   {
+      //     name: 'install',
+      //     description: 'Are you sure you wish to install? (y/N)',
+      //     required: true
+      //   }
+      // ], function(err, results) {
+      //   if (err) {
+      //     return done(err);
+      //   }
+      //   if (results.install.toLowerCase() !== 'y') {
+      //     return done('Installation canceled.');
+      //   }
+      //
+      //   done();
+      // });
     },
 
     // Allow them to select the application.
