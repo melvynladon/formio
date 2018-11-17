@@ -1,5 +1,5 @@
 'use strict';
-
+require('dotenv').config();
 const util = require('./src/util/util');
 require('colors');
 require('./server')().then(function(state) {
